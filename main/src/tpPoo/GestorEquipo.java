@@ -33,7 +33,7 @@ public class GestorEquipo {
             Equipo equipo = equipos.get(i);
             if (equipo.getNombre().equalsIgnoreCase(nombreEquipo)) {
                 equipos.remove(i);
-                break; 
+                 
             }
         }
     }
@@ -50,13 +50,33 @@ public class GestorEquipo {
     
 
     // Simula un partido
-    public void jugarPartido(Equipo equipo1, Equipo equipo2) {
+    public Equipo jugarPartido(Equipo equipo1, Equipo equipo2) {
         int golesEquipo1 = (int) (Math.random() * 5); 
         int golesEquipo2 = (int) (Math.random() * 5);
 
+        LinkedList<EventoPartido> eventos = EventoPartido.generarEventosPartido(equipo1, equipo2);
+
+        while (golesEquipo1 == golesEquipo2) {
+            JOptionPane.showMessageDialog(null, "Empate! Vamos a penales.");
+            golesEquipo1 = (int) (Math.random() * 5); 
+            golesEquipo2 = (int) (Math.random() * 5);
+        }
+
         String resultado = "Resultado del partido: " + equipo1.getNombre() + " " + golesEquipo1 + " - " + golesEquipo2 + " " + equipo2.getNombre();
         JOptionPane.showMessageDialog(null, resultado);
+
+        JOptionPane.showMessageDialog(null, "Eventos del partido:");
+        for (EventoPartido evento : eventos) {
+            JOptionPane.showMessageDialog(null, evento.toString());
+        }
+
+        if (golesEquipo1 > golesEquipo2) {
+            return equipo1;
+        } else {
+            return equipo2;
+        }
     }
+ 
     
     //modifico jugador y valido campos para que el equipo no sea null ni el nombre sea null
     public void modificarJugador(GestorEquipo gestorEquipo) {
@@ -158,29 +178,24 @@ public class GestorEquipo {
 
         JOptionPane.showMessageDialog(null, "Comienza el torneo!");
 
-        for (int etapa = 0; etapa < 4; etapa++) { //etapa 0 hasta etapa 4, sería octavos de final, cuartos, semis y final
+        String[] etapas = {"OCTAVOS DE FINAL", "CUARTOS DE FINAL", "SEMIFINALES", "FINAL"};
+
+        for (int etapa = 0; etapa < 4; etapa++) {
+            JOptionPane.showMessageDialog(null, "ESTAMOS EN " + etapas[etapa]);
+
             int partidosEnEstaEtapa = equipos.size() / 2;
             for (int i = 0; i < partidosEnEstaEtapa; i++) {
                 Equipo equipo1 = equipos.get(i * 2);
                 Equipo equipo2 = equipos.get(i * 2 + 1);
-                Equipo ganador = simularPartido(gestorEquipo, equipo1, equipo2);
+                Equipo ganador = jugarPartido(equipo1, equipo2);
                 ganadores.add(ganador);
             }
-            equipos.clear(); // elimino todosloselementos de la lista equipos
-            equipos.addAll(ganadores);// al ser eliminados anteriormente, en esta linea añado los ganadores 
-            ganadores.clear();// en esta linea se elimina la lista de ganadores para que se vuelva a generar y se pueda utilizar en la 
-            				// etapa del toreno
+            
+            equipos.clear();
+            equipos.addAll(ganadores);
+            ganadores.clear();
         }
 
-        Equipo ganadorTorneo = equipos.get(0); // El ganador del torneo es el último equipo restante
-        JOptionPane.showMessageDialog(null, "El ganador del torneo es: " + ganadorTorneo.getNombre());
+        JOptionPane.showMessageDialog(null, "El campeón del torneo es: " + equipos.getFirst().getNombre());
     }
-
-    public  Equipo simularPartido(GestorEquipo gestorEquipo, Equipo equipo1, Equipo equipo2) {
-        gestorEquipo.jugarPartido(equipo1, equipo2);
-        return equipo1; //  devolvemos el equipo1 como ganador     }
 }
-
-}
-
- 

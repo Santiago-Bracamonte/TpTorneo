@@ -8,6 +8,8 @@ class Main {
 
     public static void main(String[] args) {
     	 GestorEquipo gestorEquipo = new GestorEquipo();
+    	 
+
 
          // Crear equipos y agregar jugadores
          Equipo equipo1 = new Equipo("Boca Juniors", "La Boca");
@@ -242,7 +244,7 @@ class Main {
          // muestro el menú
          mostrarMenu(gestorEquipo);
      }
-
+    
     public static void mostrarMenu(GestorEquipo gestorEquipo) {
         String[] opciones = {
             "Mostrar equipos",

@@ -65,9 +65,8 @@ public class GestorEquipo {
         String resultado = "Resultado del partido: " + equipo1.getNombre() + " " + golesEquipo1 + " - " + golesEquipo2 + " " + equipo2.getNombre();
         JOptionPane.showMessageDialog(null, resultado);
 
-        JOptionPane.showMessageDialog(null, "Eventos del partido:");
         for (EventoPartido evento : eventos) {
-            JOptionPane.showMessageDialog(null, evento.toString());
+        	JOptionPane.showMessageDialog(null, "Eventos del partido: \n " + evento.toString());
         }
 
         if (golesEquipo1 > golesEquipo2) {
@@ -80,18 +79,31 @@ public class GestorEquipo {
     
     //modifico jugador y valido campos para que el equipo no sea null ni el nombre sea null
     public void modificarJugador(GestorEquipo gestorEquipo) {
-        String nombreEquipo = JOptionPane.showInputDialog("Ingrese el nombre del equipo:");
-        Equipo equipo = gestorEquipo.buscarEquipoPorNombre(nombreEquipo);
+        Equipo equipo = gestorEquipo.buscarEquipoPorNombre(JOptionPane.showInputDialog("Ingrese el nombre del equipo:"));
         if (equipo != null) {
-            String nombreJugador = JOptionPane.showInputDialog("Ingrese el nombre del jugador a modificar:");
-            Persona miembro = equipo.buscarMiembroPorNombre(nombreJugador);
+            Persona miembro = equipo.buscarMiembroPorNombre(JOptionPane.showInputDialog("Ingrese el nombre del jugador a modificar:"));
             if (miembro != null) {
                 Jugador jugador = (Jugador) miembro;
                 String nuevoNombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre del jugador:");
+                if (!esNombreValido(nuevoNombre)) {
+                    JOptionPane.showMessageDialog(null, "El nombre del jugador solo debe contener letras.");
+                    return;
+                }
                 String nuevaPosicion = JOptionPane.showInputDialog("Ingrese la nueva posición del jugador:");
+                if (nuevaPosicion.equalsIgnoreCase("portero")) {
+					JOptionPane.showMessageDialog(null, "No se puede añadir dos porteros a un mismo equipo");
+					return;
+				}
                 int nuevoNumero = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo número de camiseta del jugador:"));
                 int nuevaEdad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la nueva edad del jugador:"));
-
+                if (nuevoNombre.isEmpty() || nuevaPosicion.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Los campos de nuevo nombre, posición y edad no pueden estar vacíos.");
+                    return;
+                }
+                if (nuevaEdad > 40) {
+                    JOptionPane.showMessageDialog(null, "La edad del jugador no puede ser mayor a 40 años");
+                    return;
+                }
                 jugador.setNombre(nuevoNombre);
                 jugador.setPosicion(nuevaPosicion);
                 jugador.setNumeroCamiseta(nuevoNumero);
@@ -104,6 +116,19 @@ public class GestorEquipo {
         } else {
             JOptionPane.showMessageDialog(null, "Equipo no encontrado.");
         }
+    }
+    
+
+    public boolean esNombreValido(String nombre) {
+        if (nombre == null || nombre.isEmpty()) {
+            return false;
+        }
+        for (char c : nombre.toCharArray()) {
+            if (Character.isDigit(c)) {  // Verifica si el carácter es un dígito
+                return false;
+            }
+        }
+        return true;
     }
     
     //elimino jugador y valido campos para que el miembro del equipo y el nombre del equipo no sea null
@@ -140,7 +165,7 @@ public class GestorEquipo {
     //elimino equipo
     public void eliminarClub(GestorEquipo gestorEquipo) {
         String nombreEquipo = JOptionPane.showInputDialog("Ingrese el nombre del equipo a eliminar:");
-        Equipo equipo = gestorEquipo.buscarEquipoPorNombre(nombreEquipo);
+        Equipo equipo = gestorEquipo.buscarEquipoPorNombre(JOptionPane.showInputDialog("Ingrese el nombre del equipo a eliminar:"));
         if (equipo != null) {
             gestorEquipo.eliminarEquipo(nombreEquipo);
             JOptionPane.showMessageDialog(null, "Club eliminado exitosamente.");
@@ -172,11 +197,12 @@ public class GestorEquipo {
         }
     }
     //simulo torneo
+    
     public void simularTorneo(GestorEquipo gestorEquipo) {
         LinkedList<Equipo> equipos = new LinkedList<>(gestorEquipo.getEquipos());
         LinkedList<Equipo> ganadores = new LinkedList<>();
 
-        JOptionPane.showMessageDialog(null, "Comienza el torneo!");
+        JOptionPane.showMessageDialog(null, "¡Comienza el torneo!");
 
         String[] etapas = {"OCTAVOS DE FINAL", "CUARTOS DE FINAL", "SEMIFINALES", "FINAL"};
 
@@ -186,9 +212,25 @@ public class GestorEquipo {
             int partidosEnEstaEtapa = equipos.size() / 2;
             for (int i = 0; i < partidosEnEstaEtapa; i++) {
                 Equipo equipo1 = equipos.get(i * 2);
-                Equipo equipo2 = equipos.get(i * 2 + 1);
+                Equipo equipo2 = equipos.get(i * 2 + 1);	
+                String[] opciones = {equipo1.getNombre(), equipo2.getNombre()};
+                int apuesta = JOptionPane.showOptionDialog(null,
+                        "¿Quién ganará el partido entre " + equipo1.getNombre() + " y " + equipo2.getNombre() + "?",
+                        "Apuesta",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        opciones,
+                        opciones[0]);
+
                 Equipo ganador = jugarPartido(equipo1, equipo2);
                 ganadores.add(ganador);
+
+                if ((apuesta == 0 && ganador == equipo1) || (apuesta == 1 && ganador == equipo2)) {
+                    JOptionPane.showMessageDialog(null, "¡Felicidades! Tu apuesta fue correcta.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Lo siento, tu apuesta fue incorrecta.");
+                }
             }
             
             equipos.clear();

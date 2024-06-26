@@ -2,7 +2,6 @@ package tpPoo;
 
 import java.util.LinkedList;
 
-import javax.swing.JOptionPane;
 
 public class Equipo {
     private String nombre;

@@ -1,6 +1,5 @@
 package tpPoo;
 
-import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 
@@ -275,8 +274,7 @@ class Main {
                     gestorEquipo.mostrarEquipos(gestorEquipo);
                     break;
                 case 1:
-                    String nombreEquipo = JOptionPane.showInputDialog("Ingrese el nombre del equipo a buscar:");
-                    Equipo equipo = gestorEquipo.buscarEquipoPorNombre(nombreEquipo);
+                    Equipo equipo = gestorEquipo.buscarEquipoPorNombre(JOptionPane.showInputDialog("Ingrese el nombre del equipo a buscar:"));
                     if (equipo != null) {
                         JOptionPane.showMessageDialog(null, "Equipo encontrado: " + equipo.getNombre());
                     } else {

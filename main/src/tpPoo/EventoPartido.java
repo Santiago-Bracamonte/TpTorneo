@@ -66,13 +66,12 @@ public class EventoPartido {
             if (Math.random() > 0.5) {
                 equipo = equipo1.getNombre();
             } else {
-                equipo = equipo2.getNombre();
+                equipo = equipo2.getNombre();	
             }
-            LinkedList<Persona> jugadores = equipo.getMiembros();
-            String jugador = jugadores.get((int) (Math.random() * jugadores.size())).getNombre();
+            String jugador = "Jugador" + (int) (Math.random() * 11 + 1);
             int minuto = (int) (Math.random() * 90 + 1);
 
-            EventoPartido evento = new EventoPartido(tipoEvento, equipo.getNombre(), jugador, minuto);
+            EventoPartido evento = new EventoPartido(tipoEvento, equipo, jugador, minuto);
             eventos.add(evento);
         }
 
